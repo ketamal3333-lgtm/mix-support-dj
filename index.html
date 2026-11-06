@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mix Support DJ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112,600;112,800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: one narrow column like a booth-side manual — header deck, then numbered steps, FAQ, contact, privacy. */
+:root {
+  --bg: #0b0c0f;
+  --panel: #14161b;
+  --line: #262a33;
+  --fg: #eef0f4;
+  --dim: #9097a6;
+  --accent: #ffb547;
+  --accent-ink: #1a1205;
+  --accent-soft: #2a2214;
+  --good: #4fd18b;
+  --mid: #e8c64a;
+  --bad: #ef6a6a;
+  --cool: #6aa8ff;
+  --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f6f5f2; --panel: #ffffff; --line: #e2dfd8; --fg: #16181d; --dim: #5f6572;
+    --accent: #c86f00; --accent-ink: #ffffff; --accent-soft: #fbeedb;
+    --good: #18864f; --mid: #9a7a00; --bad: #c43d3d; --cool: #2f6fd1;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #f6f5f2; --panel: #ffffff; --line: #e2dfd8; --fg: #16181d; --dim: #5f6572;
+  --accent: #c86f00; --accent-ink: #ffffff; --accent-soft: #fbeedb;
+  --good: #18864f; --mid: #9a7a00; --bad: #c43d3d; --cool: #2f6fd1;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; }
+body {
+  background: var(--bg); color: var(--fg);
+  font: 15px/1.75 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 64px;
+}
+.wrap { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px; }
+
+/* language: show only the selected one */
+html[data-lang="ja"] [data-l="en"], html[data-lang="en"] [data-l="ja"] { display: none !important; }
+
+header { padding-top: 40px; display: flex; flex-direction: column; gap: 22px; }
+.brand { display: flex; align-items: center; gap: 18px; }
+.brand img { width: 80px; height: 80px; flex: none; }
+.brand h1 {
+  margin: 0; font: 800 clamp(30px, 6vw, 42px)/1 var(--f-display); font-stretch: 112%;
+  letter-spacing: -0.01em; text-wrap: balance;
+}
+.brand p { margin: 6px 0 0; color: var(--dim); font-size: 14px; }
+.bar { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; justify-content: space-between; }
+nav { display: flex; flex-wrap: wrap; gap: 6px; }
+nav a {
+  color: var(--fg); text-decoration: none; font-size: 13px; font-weight: 500;
+  padding: 5px 12px; border: 1px solid var(--line); border-radius: 999px;
+}
+nav a:hover, nav a:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+.lang { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.lang button {
+  font: 700 12px var(--f-mono); padding: 5px 11px; background: transparent; color: var(--dim);
+  border: 0; cursor: pointer;
+}
+.lang button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.lang button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+section { display: flex; flex-direction: column; gap: 18px; scroll-margin-top: 16px; }
+h2 {
+  margin: 0; font: 800 22px/1.2 var(--f-display); font-stretch: 112%;
+  display: flex; align-items: baseline; gap: 10px;
+}
+h2 .tag {
+  font: 700 11px var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
+}
+h3 { margin: 0; font-size: 16px; font-weight: 700; }
+p { margin: 0; }
+.lead { color: var(--dim); }
+a { color: var(--accent); }
+
+/* steps: a real sequence, so numbered */
+ol.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; counter-reset: s; }
+ol.steps li {
+  counter-increment: s; display: grid; grid-template-columns: 34px 1fr; gap: 14px; align-items: start;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px;
+}
+ol.steps li::before {
+  content: counter(s); font: 700 15px/34px var(--f-mono); text-align: center;
+  width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: var(--accent-ink);
+}
+ol.steps li > div { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+ol.steps li p { color: var(--dim); font-size: 14px; }
+kbd {
+  font: 700 12px var(--f-mono); padding: 1px 6px; border: 1px solid var(--line); border-bottom-width: 2px;
+  border-radius: 5px; background: var(--bg); color: var(--fg);
+}
+.keys { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.key { font: 700 12px var(--f-mono); padding: 2px 8px; border-radius: 6px; background: var(--bg); border: 1px solid var(--line); }
+.key.good { color: var(--good); } .key.mid { color: var(--mid); } .key.bad { color: var(--bad); }
+
+/* plan table */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 460px; }
+th, td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+thead th { font: 700 12px var(--f-mono); letter-spacing: 0.06em; color: var(--dim); background: var(--panel); }
+thead th.pro { color: var(--accent); }
+td:first-child { color: var(--dim); }
+
+dl.spec { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 8px 18px; font-size: 14px; }
+dl.spec dt { color: var(--dim); }
+dl.spec dd { margin: 0; min-width: 0; }
+
+/* FAQ */
+.faq { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+details { border-bottom: 1px solid var(--line); }
+summary {
+  cursor: pointer; list-style: none; padding: 14px 0; font-weight: 700; display: flex; gap: 12px; align-items: baseline;
+}
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; font: 700 16px var(--f-mono); color: var(--accent); width: 14px; flex: none; }
+details[open] summary::before { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+details .a { padding: 0 0 16px 26px; color: var(--dim); font-size: 14px; display: flex; flex-direction: column; gap: 8px; }
+
+/* contact */
+.contact {
+  background: var(--accent-soft); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.mail { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.mail code { font: 700 15px var(--f-mono); user-select: all; word-break: break-all; }
+.copy {
+  font: 700 12px var(--f-body); padding: 5px 12px; border-radius: 8px; border: 1px solid var(--accent);
+  background: transparent; color: var(--accent); cursor: pointer;
+}
+.copy:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.contact ul { margin: 0; padding-left: 1.2em; color: var(--dim); font-size: 14px; }
+
+/* privacy */
+.policy { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 22px 22px; display: flex; flex-direction: column; gap: 18px; }
+.policy h3 { font-size: 15px; }
+.policy p, .policy li { font-size: 14px; color: var(--dim); }
+.policy ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 4px; }
+.policy .block { display: flex; flex-direction: column; gap: 6px; }
+.meta { font: 500 12px var(--f-mono); color: var(--dim); }
+
+footer { color: var(--dim); font-size: 12px; border-top: 1px solid var(--line); padding-top: 18px; display: flex; flex-direction: column; gap: 4px; }
+
+@media (max-width: 480px) {
+  .brand img { width: 64px; height: 64px; }
+  dl.spec { grid-template-columns: 1fr; gap: 2px; }
+  dl.spec dd { margin-bottom: 8px; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAYAAACLz2ctAABW30lEQVR42u29ebhsa17X93nfNddce5/hjj3e7qYnBLobsZtBEAEVZ0AMmojEPCpGTXxMMCbGmKAZ1GgcwCRPohjbIFGJQ8IYBAINDd1IzwPdfW/f6Zw91Fy1xvd988e7atWqqlV773PuOfdcw1nPrVt1alWtvWq93/X9zb8fPNwebg+3h9vD7eH2cHu4Pdwebg+3h9vD7eH2cHu4Pdwebg+3h9vD7eH2cHu4Pdwebg+3+7CJh+f3q2IzDxf4zs5FXOEcH4LzaiAzV3j9qxaA4oLnzePVrxZPKCWUUgJAa/0QfA2blNIAOI5jnnMcwzPPmBJo9QcXPP+qAWAz0EA88cQTTp7n8vbt2wAKKMpn8xBid3yNHcAFnJs3b+J5nn7uuedUAygfGBDFA/h7u+CTgHP9+nXn9PRUAUl5IdxHHnlk2BoMbkZOcN1I9xqYAUhfSnPl83b2aOIKTFJ7rS/4jN55LRs+v/vnGo936MvlnXfVTWthQGcgJqj8PNGcrCYnt2/dujUub2QBhLVrrcq/ugtC8/83ADaBTsCjLrzoADFQPProo9eOrj/xDiGdr8DodxpjvsBgbgpEKIRACBDrQ1VPxv5D7P8YsfNCXHB24j5cKHOVfeaC75jm45i9ffYamHKHMWCMwWASgbgthPgEgl802vz06PS5D7z44otnJTNG8KiCF4vyIPrlZkTxMrJeDXhWLAArQLzlLe/4Eum7v9do841gnkIIewG1vR4GjDAYhDEgzDa4zAaU1EApxIU/UohLLojYufyiAQWXvWe2j3UhIE0TSMsDHgKiqX9S1H++MBghyrtWCIkor6mATwsp/6XOin/4sY994IPlYdslQzYB0fybCkDRAD55dHTkj0ajFFBve9s7vtpI949qrX+LkMLTWmGMNoAS2MtXYqVGfGKHuTarLnZ+USMjiitcBHGfGdBcsN8cYLyL9pvNNTA1dJYfNcZQ/ocjpBRSOhhtcinlv1S6+Nuf+MgHfgJwjo6OgtFolJUA1Af0xH8jALgHPMArn+df8Pa3f7Ejwj+jDd9kdRcFxhRCCIlA1rnLslnt9Z64NRtYHhC14jJAiZfnjjQXvGGuwIqVuDU7YFszoNn/nKl/yr7UxhiNEK6UVkOWQvyAyuL/+hOf+PAvAd0SfPkBIN7TzbmP4FsDTw6HwzBJkuL4GPnaN3zpd2Hc/9kYvkjpwmC0FnZzKqxsAUmAqPPeLtg2+8SOLlf9W+zfFTR8TlyRyuufF6L2aPAnXXScQ9bZoffEzpG39pmm97euTnUZhBBSgDFaa220EMi3Cun+vhuPPOHp4vn3xTFqOBwGSZKo+31fivsMPqff74fT6XTxhje89SkvbH+PMeKriiIHYZRAOELsi8htEIlG/ewilrvM+LiyKL7iTnEJu12VCc0lhoq5jB0PGiY1ndLsH8dgFEY4rushhPnJZbL8I898+qO/0u/3O9PpNKlZy/peM6FzP8HX6/Wi2Ww2f8Obv+jXu170g0qbt6kiL0rlWIoGQNStXLF7z+8YHAd1vkMANZdYxOKKd2UdcWIt+q52L1fqmrlDPe+gnG4Ib1RAFDXxbLb3izqIhQSMUkoZ5OsCz/+dw+Prv/TCc898qtfrddI0VfeLAZ37DL7ZU2/6ot/hSO8fFUoPtVKFEMJFbAhrH3ymxnqigRXFQba7jOnEHbhfyjOx52I2qkD1U80uqk0NiKL6vLkEnM3W79XBaBo+Z9a/wGx7wNbnsr2/+o4AIbXWhTb0Hel907WjGx9/4YVnPnQ/QejcT+Z76k1f+NuFDN6rlAqNNlpK4dQ9FVs6m6iWHIHBrE3gHRoTl4ndBqNDXMJuAqvXiwsEq9h28tS4eVvrMxfCTVzMZofAdUXgbX+m5poxVMaIaTB+TO2YQgiptdHGGF847u8YHl/76IsvfP4jvV6vfT9AKO4R+NZhHwf6IUyT173x7e92nPCfKaVaYLQQQh5iLNFo5e67V8RloBJXBGMdX2LHtbMLIQHCGPYlp9lzCdXFqyXO+ptN9uy+g9BcJl6bWLERhFu+wf33qtdmH9gWsBqEdBxnpVTy2z77qQ//7HptS51Q3Qvr+F4AsGI+IADMI69+w+Pd9uDHtdKPGqOVQDi74BBiFyC74tYcfk9cgd3EgZSaC3VAYcEmKpm0OU7pzN07+Nal1xuxaiMRGwAKMGua3ZG7l0U/jDlsnBz6nGncXxom+66Z/c+XxokQ0pFSvjBfTb721jOffr68dGmDYXJXm3sPwFcFvbvdrivlXHei3vcabR7VWikphFMGL8qFFBWYxJ5g2wWNabCKzaXg2wZojZL2gFcDtAF704MUEuHISm9SWqMKjVIKrRVaG7RFmT1++R3pSKR0cKTEkRIp179Ql4uvq0UW1S/evrm2wF+K0fVvXoOlYmJh40Jb9pDZUSv29pttG2r9NzZnsFEdDY7WSgkhHutEve/tw+/Q3a6cz+eqdgHlSwGheImid818bqfTiRaLxeL1b/o1f0ZK788V1tp1xSHm29LrDjPbQWA16H9ihwLFFvDMvg9NVGhASgeERBvI84I0y8iyjDxLKYqCMkqzZQjtu4is4SGlBaLrunieXz48XFciAWPKY5nNSZsdUW1qFFeHzCH3i7lIVzzAlGbr3+bgPmNM4Xqeq1X+Fz7zyV/+S51Op7NYLGI2mUp37Z4R90D0ukAI6Mde/fq3tKPejxVah+X6iEMAEXXL94B75ZCFKy5lve0DiSa2w1gQOS7aCNI0ZxXHJPGKPM/QWiGEwHU9XNfDcV0cx0EIiZRyy2Mu6jqW0Sit0aqwjKkUxhik4+B5Pn4QEgQBnusg0Rhd1NTEBr9dZa2ai8Xt7ntX3G8qf+GFYtkYMK6UyTKefe0Lz3zmY+XaJyUI71oUuy+B/SrDo91ue8vlMmmF3T9roIXRqsno2NH2dqKX5mKDg8M6ndj2IFYiV+wd115KIQVSemSFYTlbsVwsSNMYYzSe5xOGEZ7vI6ULGLTWaK0o8rxcKLMRdWITGhTSgtORDl4YIaVVfbXR5HlOnqUs5xNWS4nnh0RhRBD4ONKUQNSV28fU1JK6WDbVjWT2RLKo2TRig9ut/WYnQWItctfieXtfJcaFMUYbIVutVvfPAt9WrnleYz5xuQv+3jDgluiFXgiz4onXv/FrIr/9T4qiMEIIucVSYgdEdXfK3j4u3NfMqDWwCdHohDbGIEvgpblmNp+zXMwpigxHOgRhRBBGCCEoipwiz1Fa2bvMsewnHadkP7llvddBYIxGa41SRZnNY7/v+T6u64ExZFlKliVorXFdjzBsE4YBrjQYnZeMKBpdJpgtaDYy3Z5P8IA43j/eBoRNRok2RruuK5J4+TufffpTPwE9F2ZJgyi+bwwo9vU/5QGEXvSdxko1fVGePQfcIqKB4i4Hn6icGQf9hOWVdF2PXMFoNGM+n1AUOb4f0O0NcT0PVeTEq4UFhefh+QGhY92ka+NjzYCm/KHb4cJSLyz1P8/zcRwXKQRKK4oiJ01ipJT4QUQ3bKFUTpqsWC6mJIlLGLWJwhBHKrQuKgNn17DYZbUNY+4bJ9sGx8bfacze1dv1TjUd0xiDDMLojwE/Xa59PWnhjllQvDT2IwTMo0++5l3t9uD/Ukpbw6+R/dZGxsZyvAq7XeQ33DIudjJk1vlvjpQgPWbzFZPJiCxL8DyfVruL4zikaUyeZbiuRxCESMehKHLyPMNojZAS13FxXNeKVCE2xseOD3HNtFprtFIorcBoC0g/wHU9tNbkWYJSBb4f4AcRWiuSeElRFLieT6vVIfBc0NlGR2tgsu24774BscV2d7BvlwXrr7XBOI5Uy+Xkt7z47NO/UC7EXbPg3TKgBJxWq+WvVqtVq9373UJIB5TCZrU0i94D+tzdgW8D5EZmNFa8pYXg/PSE1WKOlJJub4DnByTxktUyIwhCur0BShUkaYzRaz2whZTSGhVFYdlPp5soXI35tv2aAuk4OI6L7wdIx7GgyzOyNEFISRCERG6HLE1YzKf4vk+nOyDPM5J4wWI+IQtatFstHGEt8A0b2t+9Tn7ZcrMAB0LNlf5XZzRM876t5z0KNVoI6bai3u8Gfq7dbkelLlhnwfvCgLuWbwAEvV6ve+Ox1/6YMbzaatFlPt+WcbDjDhHiINgucsXs6lyH3TQGx/GZLVLOz08oiowwatFqd8nShCReEYQRYdgiyxKyNMZxXAu6NQNmKUZrpOtaK1haHXBvQUVNBJc7TKkDKl2gldU9PT/A83y01mRpjFKKIIzw/ZAsi0mThKjVwvdD4tWSLEtwXY+o1SVwBVpnlUXcHPU4rP8ddMEc/Kw5YDGDMehSx3/m5IVPfO1sls5Lx3R6NxaxuEvx60MngoV61Wuf+g1+2P1HWhVGiBpE9kTvxuoVQlzZ6BCHnMv16MiWcxuEE3A2mjKdnCGEoNMd4DgOi/kUx3Fpd3rkWUocL/H9gDBqobUmTValDugT1NhLFTlKbfyAlRhuMHiMASklruviuB6O4wCGPMvI8wzpOIRBhKyJ/yhq4Qchq+UCpQq6vT5KKVaLOdoYwqhNpxViVFrpbPtpVuKwOL7IKGn87E6NyZ7INsZxXJEu59/8+c//yv8DHQcWMZDdqRh271L8ylZLu6sVheOG7y6TITXgNIrarbCWYKtko54iZQ77+XbjttvJmPYDUgi09Ll9csZiNsHzfbq9AVmWslzM6Pb6SOkwn41xXZde/wilcpaLGUIIwqiFlJYBk2SFMeA41qEchBFSij3Hbd0pLYSsNHxVKPIsJS39ib4f0O500UqXxzZErTZR1CZeLUjThE63jzGa+XRC2GrT7Q+ZTccs5hPyvM2g10XobCOGryJ6d8VqQxx5d58w21GRrWOYdcxROG4Qvhv48RILshYVEfcagGJXDK9WKwmEUsgvNkZVIGjM7xCiMc5f7TIHdEazLcKFMQf8gRopBUp43Lp1m3g5I4hadDp9FvMJxhiGR9dZrebkWUanN0BgWMwnSOnQancxGLI4RhuN7we02l1rARdFZZSsRa2UEiHrqVqm5tKg+ozr+biuixCCLEtYLRdIKQmjFkJIkmRJEi9pd3qAYDGf4Pkh/eExs+mYNInpdPvM51NWiylFUXA8HCDJ0FqXhtb6JtwBS00s71rEW/8+lO1wgV9HAEYrhJBfAoQlFmQtNMtVQXg3DLh2QJt2u30EvN5oDcYIseP+qETlGjhbcc59dtw/3XUc1CDM/i0ryisopUDh8+Kt2ySrOVG7Q9TqMJ2c4wchUdRmOjnH83wGg2OWyxlKFbQ7fcAQrxYARK0OjuOQ5xmr5aJ03/h4foDjyG0Lccsdsw6/bXyExmiKPCfOEoSwOmC7s7Z4VwC02h1AsFzMcV2X/uCY1XLBZHJOtztgtVowGZ/R7Q0xBuLljBNVcP34Go5I90DYzGhrMO2klx0C5S77mXWs2JSGisAYI4z926/1O51htlhMS0zUMXLfRHAFwLAzuIk2N8ogvtj+k2KHjS/Pad8T38Jsm2yiBtqaJ1+LkFsnJySrOa12lzBqMRmd0en2cRyHyfiUTneAlJLJ+Iyo1abd6bFczNBa02p3kVKQJDGqKEoG7ABQFBlZlmC0BZt0HJusUMZ81zqTUgV5rivns5ASz/UIgg4IUaoBUxzHs+xqDKvVAkc69PpDsjRhOj6n1ekhHYfx+SmdXh+QjM5P6A+O0VqzXMy4rQ2PXL+OIN5Yr3ULtxY12ewz+6x3UfndloK45/8pUS+u98LOtbPFYlJjP3EntoVzFwaICy0fcjMcHr0t8ILfY7Q2grpXpO7zu8C4uMgXeMhS3vqOAS/i9tmI1WJKq90hbHWYjM/o9YeAYD4bMxheI88z4tWc/vAYg2ExmxBELVqtDkm8IksTwjAiitoYbUiSFUWR4zgugR8RhCGe6yEdpzJATMXsAikcXM/D90OCIMJ1XbTRZGlCnqd4rkfU6iCFJI4XaG1ot7sIYLGYEQQhQdRiNh0hpENU/g7fD/D8kMn4jHanjzGG5XJGVih63R6ofPumvaAVUZVxZGj8zpZE2nvf1N8XGIyU0tNa//B8PnkaWhLyuhXMvRTBWwVdUWScOKZwpX9NiMr2E80q8BXtbrFr4ZoGC7p+QTXSjzidzFjOx4RRi6jVYTyy4NNas1rMGQyt7me0Znh0g8V8gtaawdE1kiRmNh3RanfxPOsbTOJVaTD0LAPmGUmyLIFmU66cGgvWcucoihyjM+uNkhLX9Soxm2Upy/m0NIyG5HlW3gQR/cERs9kYgaDXP2Y2PSdLE/qDY8ajM6JWh3anz+j8Nv3hNfIiZzYd4Tgujxz3UVls8xUPRDGa/XkvMRO0zG70PPcIIIqMjOM7Z0B5F395U5EoRKd8aextcQlj3dH74oIaDoPj+UxXGdPxealf9ZmMz0tL0rBazhkcXWcxnyIQdPtDJuMzHMel2x8wm47RqmAwvIbWmvl0hOO6dHtWVK+Wc1bLeaUbttpdgjDEkQ5aWddMkWc2ZqxyjNGWLcOQdqdHFLURwGq5YLW0TvBOb4B0rBVutKY/PEYVitl0TLvdQwjJZHRKuzPAGMNsNqE3OGIxn6K1otXuMj4/pdXq4roeZ6e3GM1jXC/YjtfVr9eun3XHi3DlNdpKGl6vuQBEq4alO84tkFcE3Bb4jDESW4rq1z9htlJL77wHmDkUKN75G1JKEmV1IxvdGDKfTQijVunvmzEYXmc+n+C4Lq12l8n5Ka12Fz8ImY7OabWsoTKbjCow2EUfo5Si3elZ67jU1VZLa0EbqGLFfhDiB0FppLgYY2zGy2JOvFpgjKbV6tBud9GqYD6bgIFe/whjDNPJiCBsEYQtJqNTXM8njNqMzm8TRm2EEMwmI/qDI+azCUJIe/6TEe1OHyHg1ovPs8pBOnJzfRsStndro4y4XA3c+r7YD/3Z902rjgmu1tvxjhlQND2EMXJTFCDKRy0zUdSKBg69rn2fSz5TuV1lwPnonKLI6fQGZGmMEBCGVocaDI9ZLmY40qHVajMZn9HpDwDDfDZhcHQNrRXz6ZhOb1Au6jlGK/r9IzzfZ7WYEa8WOK5Lu92l3eniejabZR1WS5OYLE3I0pQiz8EYHNej1W7TbneRjkscL1mt5nheUKoGitl0hOf7tDs9ZtNzVJHT7R8zm45QWtHu9BmPTglD666Zzyb0+kdMxucEQYQxmiRe0ukOKIqMF2/fwjhB5Q7aa+6yd13F3vtabIOtsXebqK1zVVoinEP4uG/5gMYYAQhdnpTGlEjejo2ZAza5OZAnePAPVhfEukWmy5jVcm6VeilZxCuGR9dLl8WANLG5fZ3ugEmpEypVkMQrhsfXWc6nGGMYHF1nubAumV7/yIJyNsFxHFqdLiDIs5RVmiDEOrrh4klnKw9wvdk0LOtmMQY8z6us6SRekSTL0kpvM5+NEdKhNzhmNhmRpAn9wTXGoxP8IKLTHTAendIfXGM2HRGvlnS6vfK949IyPiJqdVjMJpxPelwbtMizrCo33EsyaMzAbH7eYj6z+12DxtS7yVWYeDkSUtnzFZd3xSHve926rdKB4GpNeXfSnnItmU6sAh612swmI3r9IcultSRBkKYJg6NrVifs9dElKAbDY+bTcWUcTCdn+EFEu9urQNnp9sEY4tUSDPhhSCsIAbNJSjDpzg1SOqgdmznj+1Z8qqJgtVwiBEStNlJKlgurV3a6A1bLBePzU3v+iznTyTm9/hHj0SlB2KLd3gacNZZ8FospvTJKMhheI0sTzk5v0+28FkcKtNkFD9uAFA3huYve3wOm2BLLLyGz/q4BuI69CVO7K4TYiGBxj5p+1KohcNyA0XhGnqf0+kekSYzn+yU4ctqlmBoMjlnMJoRlgulyNWdwdI3ZdIzvBwRhi/HolE5vgCMl09GZXdwgYLWYYYyh1e4ghCRNE7I0QToOruvh+T6OdDbJFXX/kdEUStmYstF4rk+708GUgBZC0O70SJPE+vm6fYSUjM5O6A2O0NowGY/o9Y8Znd+m3enj+wHT6Yhub8B4dGZ/x2QEIXieb0Vxp89kcsb5+ZibN48xWbKpNWmQPhvSMAeY8jBgjdgkP5SiXrwUEMo7xIJoCPNiSpfnQQW2SZEVB4wTsX8MU7pAstyU6Us2ty5NYtrtLov5jE53wGJufYFZbhkqDCMWs6mNfsxneJ5PELWYTs7oD45BW52wPzwGAfPSKGh3eiTxiuVihus4dLp9wrAFRpOlNokhXi1I4iXxalW+tvFcMIRlGFA6DsvFnCSOrQFU+vOM0XT7Q6bTEVrZ16PzU/wgxHEdZtMxvf4R08kIPwjRSpGmCa12h8VsSqc3YDGf2PNMYhzXJQhCJpNz0rSoDJK99RCNgdLGtbhQLNd0/UOG6v10wzRiU9xBvs2eaX9ZH3xjkI7HYm6zRVrtLvFqQRS1KxYsW7zhl7l+ne6A2cwaGWkaV6Gv6diCL88z4njJ8OgGq+XC+t2G1yiKnMV8QhBGdHsDtNEs5jPSeIV0XKJWi3anS6fbs8+dDp1uj1a7VyYzSJI4ZrmYYrSm0+0TBCHz2ZisZO44WbFczOkPrrFczknThF5/yOj8hChqo40mXq1od3qla8mKa98PbMq/UrheQJKsiKI2q6WNABVFzng8QTp+LdnvomsrGqJPV0sIOODTEPeTAS/Gl7ggwfSiszuo79VOUgoKZSo9T0hpU+qDkCSJiaIOq+WCdrfPcjGj3e6RJCs8z0dKqxN2ewOm43O6vWGVHm/F8gjpOHR7Q2bTczCG/uAaqihYzCYIBO1Ol1a7jRSQxksmkzEnJ2e8eOuUWyennJyeMZ2MSZMVUkCr1aLV7iGEKDNZMrq9IVqpKqIBMClvhni1JM9SOt0+o/MTOt0+cWyd347rEa8WtDs9FvNp9RtbrbZ1mgchRZEjhCQIIqazMVmmbJhwz7dn7mxdxUVrJu5JazX33vBfQ83tJb9uK5xWzxVsaGMhHZ/FPEapgk6nRxoviaIWabIiCELyPMX1ShYEHNdltZrTH15jNj6vnLlBFCGFYLlaMDy6wWxybkNnYcRkZGOvjnSYTs4IgpBOb4BWOclqznyZkitBux1w86jPzaOIbuShtWEeF5xOE04nMefTOb5r6LYCwrCF27bifDI6o93tIx2P8VrnM6YyMs7PbtHpDvD9iNlkRLdnHef94THT0Rm9QURiQCuF5/lkWUoQRiTJijBqkcRLotLlNJ3NuX6tj9YpTUU4VcJBrbKOSyIl9rOikSAeGABlPf1i3418INR2UM5uNIydblnGCJbLBW4Ziy2KgqjVYT6b0O1Z3W/93O70WC3ntDs94tWSIIqqZNIwajMdnzEYXrOpT15AEEZMx+f0h8cUec58OaHTtT7DeDllukjx/ZAv+6LX8PXvepRf9+Y+r78ZMGw5IMsiiVwzXhZ89iTl5z4540d/6YwPfPKUyXxEr+3hhy0ct8d0ck4Y2Ty/8fkpvcExqiiYTkfW0j07oX90jTheUuQZQRgRLxdV4kS70y1/65D5bEy3NyivwZAkXhG22niex2w24eio31i62eQQa8z7a3bA1fIJrRYoHygDSn3AztrQnLgjVtztDqBt4VBWkKcJrU6XPM/wPN8++74t5HFdlCpYt5y1Kfku8XJhGaR0byxmE9qdPllpLNiA/yn94TFZaksl+4NrZMmSxXJJpiTf8J438kd+51N8xZu74GnIc8gU5DllGhoCw1FkOHqd5J1vOOKPfd0x/+8nn+R7/u/n+KH3P4u3GtFqtej1j6u0sO7giPG5BVw6GRHHK1rtLtNS55tOzhgMrW8zjFpV+pd0HJQqcF2Poshxa9ciz1LCsM1iMSNeJbRbDoUqNiLH7LbsaDAlzEE3RANFmhIDL5XEXlpQevsh6gE5c3C/ZTpryIvKd79/PCEc4lUMAnw/JM9SgiAkyxLCoEWWxoRR2+qCLSuKwlaHeLWk1e4QxyuCIEIVRdnpwCWOV3R6Q6aT8yoxwILvmCSeM57N6fd7fO93/Xre+5+/k694ewRpjJom6FhhClMt5toVYAqDjjVqlkES8+VvlPyDP/E6vuc7v5hut8toMmO1KNkqicmShHa3X7pjBrZoynXBQJ5n+EFEvFrQandYrRZErQ5xvCSK2vY3Ri3SJCYMI9I0xg8isjSp3FLzxQIhneY12Lq+pnkda7auaBwjUo+5PDAA1j2BZsfXftkPOuSwqQX2hMEYSZLGeJ5fA7HYqohbO62EkGUppoPWyrJDlhJGLVartSibWiV/ubAGjRAk8bI0BqZMZkve/LrH+Of/3W/gm7/2GL1YohaF1S0lSAwCbRsZGVM+25tICoNTLqheKfRyxbe8J+Jf/tkv5k2vvsH5dMlyPqbbG7IsEx08z7fuo06P2WRMu2tViChqk5YlpKoocBwHUyWg1ms2RN1ZUEZg/LK+xCAFDUDal1riEKHsrR87ZCIfNAMeELEHLNpD1m+TG0AKhyxXFHlmrb08w/OCUuQE5FmKH4TkWWKNkfLfWZYSBBFpmuAHAVmW4vk+ShVVb5c8z6owlnVqL5nOVrz1DY/zj//iV/KGxwTFOEEKYUG1Xt0KeA0Pvdknha1RKSYZb7yR88/+47fx1tc+wmi2JF7N6PaGTCcjwlabNE1YD+IpigLPD8iyhMAPSZOYYIfl7G+My9+W4PkBRZbi+R5FvrkGaaYQcjtJ4dK12ikzvSe+lpfFDcMVsmt3A8Xb8bydrxuEdMgz243Acz3yUucpirzUA+1zXRfyfd8CtdSJgiAiS+JSdFk9a7WaV8ZK2GphtGI+n3PzxjF//z99Nzf6BWpR4DpiB3AatDU89sCodSNIXQfUSnGznfD9f/It3DgeMJ3OUConCKPSed5lsZjR6vRK/2bLuljCiCxL8f2APCt/01oHzvJKF3Zr12L9rLUmjhOkcBuq0ndWw9wd2Nb1OA8OgPpiFUNcoDqIffd67Xui/K4kzTIcKe2drG39B/UaEzZt0mT1GVn2grGiWLpuVT+xjilJKUsQtIhXcxQef/U738WrH5cUixzHYQdUdeBdBL4dRtQaR0Cx0rz2Rs7f+va3kBmPxXxia4LT1BpP5XeEkGhtjS+jLINprcvfZhNd91qDUBasl98VQuBISbxaYUzZ6rgehmqSpNXDHB5j2PTQD1QES6sG6m2dVOzmBNX2i/p7O/vFzneMkRR5hut5tkhcCrS2Fq7WCtf1UEVRPuc163gtnoON0ZImNcW9Zf1nYRuVp0wWGb/rq9/I17/niGKS4Eqxz2h6o/MppTZg3GO+NUtug9KVhmKW8Y3vCPmWL381s1lCXhpQcbwofXkrwigiTay4TbOkBGlS/aaK8ddWsGM9AE5Zw2yvkcbxPNIsRa/zrHRtbRqu/WYdxf7+9b7dz+oHLYK13gbeDhD3EtMOvLcPWOuQ1toW+ziuh9YKx3XRqsAp3S6O65bi16Mo7OfWLorNs7KAVQWO49p/uy6qKPB8n3i1ottp8yd/1+sxWWLbOjSJ3fVrwGk5GKMxSh/QDXcZUVe/yaQJ3/WbH6PVbrNcLkqVYXPuTgkotzzHtYvJdTyKtfslz3HK5/VNuL4m0nFtqK7cr5RGIpuZzVyFES956AcKQNkshhve24BTHP4hWyJaopRtdeY6Dkqrivkcx0ErhSMtEGT1LKvqsHXRkChFl1x/Z72gngdGM1umfM07nuTNr48wqwKJaQSf0RpcwdMvLvl7/+IZROggPIEqahaxbhLH62NoHDQmKXj7qxy+9oseYbXKMFrheSWIyhtkrTqsxW1NzpZWcPl7tCr9gvaarJnQAtYtK/UUArkpbmuSNndAGHsk80ABuP7rF1ZiHdh/aCioWfdcEahyWqYFjwWY1majB5WAW+uBVu+TaKNLV4xlkKLmuPVcnyLP8T2fPE8x0uG3vftRDIVd7EbmM1VjyixX/KG/9VH+rb/0Szx/FuN07bkZpTcnvyuOa8e1/8z45nddA+lWYjXPS/FaqhxFblnPsppT6naycsFU5ZYlINf6n5T2ZpVlS5DKEW120mGajMArrA1XMFxeXh3wyna5aMx0bn7TXmSltZ0bYgf5bJ7XA2TWfWYqMGocp1yIErROKZIc160WRpdsmqYZ1wcd3vWGHiLJq/LDRoNDWzA5Ao57Hv/Hz97mK77rF3jvjzyPjByEK1C5OuCiqblnAJEWvOd1Eb1+iyRNK0bfsJmL0sXmfbl+ljVduO4TZHMd1sxfXtxCqeq6bddsXjFsKq68nA8AgFLfwd1w1VtmfWvai02tGbjYaYVlGwEJtFmzo67El2VAXbVYk0JWC4QQCClIs5wnbnR4bOhCrqyjdcfg2NXtjNEUynDc9ZisCr79b36cP/BXP8qtSYrTcVBKVyE6e5zt7wujIVc82Re85nqbOM23mp3X2UxIiSot4krcaoWoVI4SgGK7x/MmI1igCnX1EWR3GgB74ADUl6fzNN0y4pLMwvV+XQJmqxWv2O4vvWmXWwOYATuJrjb2q9ZYUpZF73lhePxaGzcArUpwaHPY0bx+AIUyeI5g2PF478+c8JX/2b/mn/70CU7bQbiAOmCIGINWBtczPHkcYpRhbzxZ1Xpkw2p63ZDImFp3g90C1k0FTvXKaK4SkRf3HKGvOBHcZGJd7sGuN4HcSmNdA02ILV+g9fybhlTLne9aY5tBx7O9Z/Ud+PmqGwSUtmx4Mi/4/X/703z7X/8Unz9NMRJ7zIP6pGbYcne6hm9CarVOfVWokRog6+K2qd/GGp/aXFVxM80zxMxleZwPOhZ88HHApDKmwYw65Jyq55+JnTQtsVVy1zzG69A8jx0d9JDOtmXV1kTznjfKEHqSrDD8/GfmnM+yEjN6341TiyGLO5Rv4iLl+WDsrMmkPbBeQtfixbpm9l70eJDpWFe6gOaC26kp/8fssN+OgK6loNRZUO8ww+6aiGrYpaj9W7BKClDGil/EJf489gDoOoJFYnXD//AbbvJf/O7HCTyBiQvrU2wI21lRD4tEcbivt9jKibSGrNl2L61zJ80BIBo2Bsju36hYc39uUrPLYjdj9d5s9yAfcLdB+k6+WFOVkdj9x+73TSMA99tHlPqOFBZEdX0QGgC8rjG2f9d1JLfGCSbVO/6/hgiH3gagLAF8Ni946+MRf+XfehW/4Yv7sCzQcYEUh2LGBonB5IYXJmnZ0nNjTGzPZdhUrW30v7XbZSNnTRPAytOV1Qd1TeCZWrMYs7Vezcmo+5+7V45A9yVLYJpwdrAMvanL0M5zZYLs1DWIveGpQopSNSpjwL5TOnLX7gqnsox3Z/kaIAwcnj1dcjbNud4Fk5uNJbzHgrp0ohtcR7BMNYXS/NHfcIO/8E1P0O84qGlWZsGYZmNGmxI8hpOZ5nOnKwLfqeV7bqYWrf2ZVTy7TMdyXJc8K3CFrA22qTcBrQPZlNdQX1lKmQtnzphXmBUs74KRr+yNMTUA1nyAQuyVwFt3xDpgryrH7XrRNr4/675wSoBGQcDt0ZJffibGuNa3tvb3NYrg0oo9mxe8+sjnn/yJN/DXv+O19H2BWuY4soT2AZ0Po9HKYFzBLz6bcTpaEgUBqpZ0ULlcpKyiPWtfoFq/X/MBih3gmbpxAriuuzMy1lyyLOJq6/WK8APqwwkUl4QbL36U4wgcKTbsVmW4rHWfvbmae9EAtxZXLcrw2zp+mhc5nh+gipwf/uC5nS5xIKVqY3wYCqX5Q191nZ/6c2/hG945RM0zTGEzXvYNjppTu3rf+vF+8EMzTJERBIFNH3PLKMg6xlvFt0sHulwnpMot9aTuB5RizfyyLNASuOVNx92ujbj8ew8MgBeFd3UDMPXhUPFe7q0qncdSyu2oQOWUdauLvWECs+lgX4sDb0VDVJlTmOdIx6MbefzQB29x+0QhXYPWzeCTGEgVT90I+Nv/7usYthzUPMcRNdbTFyQjGHts6RhePBf8n//6FD9wEI5X5fQVRY7jbZIStpmOLcCtHdVa6yoDfO2olnITU3ZdB2X0Wnu4MKfgqkRSJx0tHyQDcmcMeEc/zBiktHPWVJXpsk7BUpsskb3Ml81iaK0QziZRwVrIm39rrWi3Ip6/PeF//vETROhhlLowscARBp0UmEzVMqV3RW2zMaOVQoQef/2nZ5yeTOl22lb8rvU5WWOwdey7FMNViK5ekLT3vMmgKfIcz/PK0KQpCwnMXayHaCYM8QphwMu8gPpw+lllWDZ+3hiMURWwqpDaut7D2QegvehWpPl+UGZI25R8v8wJDMKoyg2MVytcP6QTCv6nH/4Mn/hsgRNiM1w4kNVSWrGCZifzttjdHEMpjesbPvKs5G/9+LOEocAL7IiGqCwyD8NWLRcwrsoJ/HUuYPmb1vmP61Qs6bqbmHEJYFWqGELaa6kPSCFtDqxN9TDN3kNzbzyB94YBX8LjQnFs1FbB+cantWn9WYnZ0gBx3Bpb1JJVLUus8+vWgFbkeU4UtZjN5vz7/8unSIsAKa2xcKVcvwsMjor5tEEKRWJafMd7n2M5n9Pp9FBFXg22qTObV9NVi3r+Yz05YS2eawVFm+wYg1KKKAzBqIPXWN8DUfxA0rHSOzZ2TWPbr4ucMQiB0gWe5yKEvaNdzy0H+tUZIK9Y0NkSz6pU5HNcr8yMDkOSZEWr1WExnxG1uixmU1w/pNcOeN9HnuOP/I+fQwQRUiiU0jt1IIezpJsNDmMr0ygQYYs/8A9Oef/HXqDbCfECWw/SqdqJ2H43tgApKes/cjx3Y4xsnus31BqsPkWRWfAWeTl4J0TrYs9kNebOnBPmotjCA9cBzU4o8Q7cReaCKyAQpT6EtVrLYpxNLt+mSKcSVWW9cBDath1rkRaGLdI0Jggi8iytUrfyPMMPQ2bTMWGrR7/l8N6f+CTf8T2fI3MiHM9Q5KrME7yI+fbZ0hhDUSgcT5G6bX7f953x/T/1WTptl3bXdjYIW22Kwna5d1x3024jXm3V/9bFc7BVGZdYFSNPyyKsrCpFdT0f37MWdL1V2524x5q6lpkDvuD0QQHwrtx/V7wSpnRb+H5AUeRV5rPYKjpaZ0SbLYtYlomaVhTbQu8kXlUtPVpt2+zHKxt8L5czWp0Bg5bD9/3oJ/jNf+ljfOLEwe35CBRFoctUK3OQ+YzWKG1dNQKF23X52CjkN/6NZ/kH/+ozdNsOnf4xq+XcNhMqq+K6PdvJq11WxQVhRJ5ntgRB6ypsuE7VqowotVusZH2eWZYStdo4jrDne8duWUPzVEQuZdIHAkBz12A78JGqq6dA6xzP961eU9Zx1Ntz1I2LquAoXtpOArXuCFFkWVCU4xXi1bLsxXxWDi+005Fa3SOOuj4/+UtP81V/7v189z895zT1cbseTgACO7xaKQvKotCoQpUjVTWOb3DbLqdZwH/1Qylf8d98gp/+yHP0ugGd/jXi5YKiyOn2yvbBgyPieFVNZc/StGy5tqDd7rJc2NZrq+Wi7ACxKn9rQhDaqrpNwVJQjpU1dNodjM4PUpe5Y1Bu77xHgZArDarZmZCOi+sGKKW7vcGXSMf9KmO0EWUAtpZ+t/lyLTNl+73mwTWbQTX2rne9gCJXKFUQtjqkq1VpOVqAJSXQ1h2i1sXcqsgRUuJIhySxFWiz6bhqZOS6Ho7rVg0h43hJmqxodfoErmA2n/Ejv/A83/8LE54fC9pBwLDtE4YOMhBIXyB9ifQkwnGYZw6/8Kzhf/jJOX/y+5/jB3/28yidMeh3ido95rMxYOgNjhiPTmiX8+jile3MMB2f0R0cEZfFSkZbT4Dvl70AW+3yt5a1ze1u2Ruww2p9s60WSNfl2rVjdJHuZclcRA7mgnBHA8kYKaU0Sv3kYj79IK4rUSrjDke2uvAyCmEjtm5IcSA3YStwZAyYgiCMWC1n9k5Yh9ZKhdzzA9I0sSWO5UKsFjM6/SHT8XkJrjOccir6dDKi1z9idHabTm9IGLUYnd+m17e9+kbnJ7Q7PQbDY6JwwQsn5/yVHzjlr/3ziNc80uWpmy1edRRwo+thjGG0yHn6POXTt1c8fbJAxQmuLxkOI4Kog1KKyeiUsNUmDFuMzk5od7o4jst0MuLo+AbTqe2SYJSmKHLaHdsfenh0nel0RLuzZsHSVeMH5HleWsjKToYHsjRleHwdRxqyWqjOXFXX25nEbu4zKtx7qeOJA2/UY+WNX9jGZvUlU45AVUWK73VIpGONi6hVNW20Y1iHzGe2t3KaxEjpIKQkSxOiqG07pXYHVUu0NE1ZzGf0BtfKhpC9ahJRu9Mrm1WOSkuyzfFxhCoy0iTl6RfO+cwzp43ZU44naYU+QaeP4/hoY1iU8+h6g2OUKhidn9DrHwGGWQm+5XKGFJIwiCzojm/Y4TWdLmkaV0MQVZHT6fSqvoGzyYhOb8ByPqVV9iGUjkOv10UVWRWi3B34ay4wGi/KVTD3WPzeGwDuZGMZcWD6pai3BaMhj41a6tG2BNBoXEcRBFHVllaU4SjXdcnzlDCsg3JKt3fEZHxqFzsx5ZiDPuPRCYPhNaaTEcvFjMHwGuPzE/wwoj+8xnR8DohyBkdeTc30/IAgapdjXM3WqlR1akKiyzkicTxDIAhbbVzXZbGYYbTm6PiGHdkQLxleu8mynILU6x9ZFh4ckcRLpBT4fsh4dMLw6AbT8ZkF22JGGLXIUjtRXSs7j1g6kjhe0usNCTyHLE22yzEvcqeY/eHVzb6xhhTBBwlArTXO2um6I1vtqE+BEbWkSbNdHVMxYzUIZDOxejMk1H5c5TF+0CHLYuvLa3dL9hswn43pD+yM3VC0cF2/bG1m2aI3OGZ8fkIY2ZFbdsaG7Zo/m44s8KYj4tWKTndgJ1dORni+R7tj9bQsS8sxq/ak17PiDGC0TUhdO4Jdz6tmzSXJitUiJ2p38DzftgSWTslyI4SUJfhsa16tFEkSMzy+wfj8Nt3ekNVygesHgJ1dZ3tHb2aIdLoDktUSISSDwQCdJyWodAOo9nMGLwalOQDKmi/0ZQdgzelT1VIILNi2lDiz9WO2UuDXNGnW36ux5+5UZUAVOb6bE4RtknhBGFpmybPMtl9bzq07YzqmPzxmMjolchw8P7QdUAfXOD+7RbvTJ4w6nJ/doj+8xmq5YHR2m25/SJZldkZHENEfHpVjt2YlqHyiVqty+Wi90bHXCbAI67u0zDnHGNsxv93u2YlJixntbg/X9RiPTgjCFlE5msuO3pLM52OOrz3CZHJuO/MDWZYwPLpub5zhMYv5lCjqkKZJORDbGjK9wRGh55Alq9JdcyAYcEj8mh3AmQO64ZoshNngL30QIlhrkLb9bQU8TCVqt7O4RanX1ebbCtNgkZTstwZmDbxFusSPBuSZ7QHd6Q6YTcvup+kUpRRBGJW60ZBxqW9laVpaupYJW50ene7AGiHdgW0UOTrDD0IGw2vE8YLZZFQOQbRMlucZSRxXqU1CiK1J8OvCdSEkrudVE9fTNCFeneP7AYOj68TxkuV8Rrc/BKjphJr5dMzg+Aaz2RgpZTXP5KjUCaNWG1UU5Sw7O/JheHSd+WyMdF2OBgN0tignmusD+t6+ImeaRPQlTGnKWP2DzYiuqLi5dOpOjI8t0hTNeobRCvIVYdRmtbQDa9rtnl3Qml8tSWLi1aI27uqY2WzCYj6lNzxmfG7nsNnRWKd2kvrRNZaLWTnQukOv3yLL0mpipuv5BGFUtgE2W0xRH1ajawwI4AchYX9InqV2/m8QMiwNjyxNGB5fJ0sSVvGCwXqMGIZu2T21PzwmiZeAIQxbjM9PGBxdLw2rHlmWkKYJ164/gu8osrzYMPIWqkRt2vshnXBTgWcuczbvVAg+eCvYHC7MqiSquGB++pbuuP/Zdep9kcV4rRDPD4mXthO+yKTtsdzp7uh8gna7x+j81E6cnE+tzjc4ZjoZkSQx/YEdbDg+P6XT6VlXztIOofH8gKjVLRtH5mRZWs4jacgKLn+/lE45sLCLAbI0ISnHg/UGR+iiYDw6xQ8CBkc3WMzGaGMYDi2TCSFLY8kaHaooajrhCd3+gCRZ4UgH1/UZj06Iog5H/S5FMt0SvRugiSut34WDHA4ZKq8UAF4ONtNsqOz5BHdpbx+tKp0ThQOWqqgC+uORnaO71vl6g2NGZ7dptbu02h1G56eVs3k8OqHbGxLHq0r5D6JWNS8uitpErQ55lhKvrC7nOK7t0u8He7XIdaNMK0VRZKTJCiGsJRv2hiiV27kjQlSDESfnJ4RRmyC04jQIQsKoxeTcjowAw3Ixs37C8VonFOWMk+vMJucIIblx4wbkK6uKX3RnX2LgXpog8kr2A671gr1KtEaw7YPxcmBuWFCrHJkvCaMOy8Wk8gWOz0/p9ocUecZsMq6YMGp16HR6jEcndDp9olaX8eiUqNWh2x+ynE+rOW52rtsCHS9wPcuAUgqUsoMK8yIr46v7d4aQAkc6+H6AE7XRWlvreT7GkQ7tjh1es1xYoPcGR+R5bsfJdgcIIZiMzuiWY12XixnDoxvMZ2Mc17VjZcdnDI9vsFrMyLKMGzcfJXQNWZxtNWvaYr8t9hIH42nb+qJopDpjXmEANA2hm4Muoo3fZVPo3wgyU7k09nTFshNoka3wHB8/aBEvZ4CdSD4ZnZWW4oz5dFyOvT/F90N6/WMm483rxWyCwY7EUkrZ6epCVpMt8ywrB08bpCNxHBffD2w8GVFW5W06ZxltUNrOddPK5uv5QUAYDtBas1raIdZhq40jHRbzKSAYDK+RJDFpvGJwVL5O4hJ8E6SUtEv30WB4XBo2C3r9Y4a9NvlqsgW+5jUye9GNZpFqDiXU3VnM+OVkQLMXNRQ7oKmDrdY4ozEedzB6txN5kBTJlLA1JM/Dcnhfn06vX7orrrGcz8qwm9X57Ey2Y+bzCUkSVzrWfDbB8+wAaa01Sbyquuyv579pratxrVrrnSWwJymFRDoOQRBV38nzjDSZIqVTmyW3YpVntNrdKhbtOC6DIzvl3WhTTcV0XY9Wp2snavaH5Y0yIWp3eeT6MUU8BSGvJjrN5XFgc5FlfI/Bd49DceuiabHFbBeh9WJRu6NP1twxmzYpAhVP6bQGFEXBbDai3RnQ6fQZnd6mPzzGAOPRqdX5VovytWWkeTm+tdcfkmUpi/kUx3EJwgjHccjznCxNbKaLEEjpIB1rZNh/C9YNk+yw6sLqgHlWpYu5nk8Y2mlNaWLHjYVhi6hlkyfWU52klEzGpwRBi7DTYjKyA2qCMKrAZ8CecxDx6M1HMNm86ghhDoTZ1n1mDBftv0C+mgOgfMUAsKkDfgOD7Yrcy4PJzW/uglRrDemUfrfHqCiYTc5pd/t2BOrZCZ3eoIp+tDs9ul073srzA3oDO3N4Nh3b2XDdAVqXQNEKz/Xwg7ByvaxBporcLukWAQqk4+D5QVXPXOmApdUahBHScUiTmGQ6suG/wRGrclhhtzdEa81kZHVZIYR1xQyO7TT36QjPD3n80ceQaln2/hMXuFXuIH+qwfVyaVqWeQUA0NT8R7tgOwisdaLBIbbbet+UIb19P+HGKFE4+Zzh8Iiz8zOmkxHtdo/+8LiKbNj47zmO45YTkZbMJiOiqE2vPyRNEhbzCa7rVQxYlAyotLKh6jK1yyY7bNq9ab2u/dAURWxDc4AjHTzfJ4paKKXI0sRO+fRDun0baZlORgRBWLmDlC4Y1uPFR9dLdp7gBxGPP/oYro7Ji6LWMbUpWrGpFrmYHXeL0s0lFrG5pzmB91AHNHuj0q8kWq8qihverxs2RVHgmjnXjo85PTM2Lhy1qnjp2ueXJCumk7PKAk5WC5JkhR9EdLp9iqIgTeKqi6rr+QSug8S2ylDKJp9Wrdeq3EXbhUDKoBopoVRuDZl4hRTSOqUj6+Cez8a4rltZ7dPJGWHUphP2qxjx4PgGq+WceDknbHV57JFHkGpFXtZ81EVm86Bpc6VB1Ac/f0HGzL1K1LpHOqCoUgc2uuA22BrFa5Nn+sBnd3XL3eMLIWwFWTbn5rVrnEjJrDQ8Ot0BeZ4yHp3SbnftoOjFrErRDyOHNE1YLqZI6eIHgS3u1gWqZMF1mG1d+C6EnV1CGfbSZSWaNpsWbo7j4vk+gYysOE6TysHd6fatQTGblKx8jTwrz7HTxfMC5tMRaWqHXN+8fgzZohK7e0Vel2W0HHx9OPW+MdPdXM2x/TK7YcwVWfKwRXw5221cMxeBUCuNSabcPBrguR7nZyd2FnC3b8e0LqYkyaryydmZaoowigjDIUoVpGmMViuklDaJ1fNrrTD0RuyVEydtOpRTjQHbOKULsjStCuWDMMRxPPLc5iM6jkO3N8AYY+O5UjIYXqPIMyajUwxw/cYjHPXaqGSGqnWAPShGL4jxmgvfr4XqGo9j9hRAY14xDHggCnKnIrcOLLiSTrn13ZojO4+nHHU7hOGrOD05sRnHYWRdLUpVWS5Ru4MQkjRekcQr3NLwcMpeLDYEZ/166+hH9Si7LRhjMKqodT8t9UXHJYxatuO/UmRpSlEs8DyfTq+PMZrlYoYxhlani5QOy8XUlg+EbW7cuEHLg6x0tVwFfLspVBe6Vy4QqY0i2uyncJoHDUCxk111aWB4L/qxnZq15aI5BFpTSy3c+QyVr1uSJwsiL+DJxx/lfDJnMjknPT+h1erQLX2A8XKBMVgGrBkLSTnY0HU9fD+smM1Qa1ZZ/eYNKNc/SWuFKnLieFn1p/GDkKjVpshzlvMZQkAUtXFcz7pkVgukdDg6vsnxoItQCVmSVn4+c4jdamx8Eej2UWf2mNNcJQZnGnpbPng/4C5QmnXBS9mxAbtb6YGiPPKB5IVtTNtRX6LIuDFo0+20GI1tVsx69m67Y5koTWKSsjrN831Cp1V2GCjsPBFdE707rX8rX1ttv3QseCM/RAgqYK87ILQ7Xcu8yYrZbIwx0OkOOBoOiVxDns7LRkSyKTtqB3wHLN4DOp25yO1imtjv8sYCr5BY8K6obKoyujoImwyYLd1xF4RspeiV+63OmCULfMfjsetHrPp9xpOJtTBXC/wgIggjwjLfzvruYgQCx3Fs9Zx0LmT1rVEL2lgDprA64HqCux+EVYOheLUkS2MQkla7x3AwoOU76DwmS3ILvB2Re0iENmYuX0nv2xexh3zS9yMT5r5kw3AFXa+5c+92Cn6TyBW1i7dhQlOBrN72uEkkK6VQakbk+rRuHBPnQ2bzOYvFnGRyjuM4+EFoRa7TKltrKLQqSPO8ZoCI/Y7CFRCtb1I6Dq7n4YcREttmJMuSkgU1rufTGxzT63aJPIkpEvJkWR7b2QOUOSAmDyYvm4tcLubSkBwNfr/7kRZzf9KxLjNILvHpsQW05pBxlbTQRLS7bLilozq2HUaREboe0VGX40GfZZKyWCxKB/DKsp/r4nk+ruvhev5Wy+BtIJgtFqzSsvKcfLWkKArLgq5H1OrSaXdoRwGu1OgiJU/yLeBt6WaXid8Gg+Ogi2aHvu7MSr4/aVn3py74gJFxIctVoN1ESeqYbArl1fVNtlw0m/9vWWumlgpWOq8pcqSU9EOffuuIXB+RpDlJkpCkCVmWkSTx1tSm9eySrS6lxvpAN6OzJLLMnul2+4RRSOh7uBKEzlHFglyXxVxCVnUWhyJpaxmx0ffMwYSDQ2L1omSD3T7Vd9RK4cEBsF4AbxpYUGznAFZ0tQtSsSdW94wKse2eqSzgWseFaorQeoyDqQ6/1yF5o1vaEQ86iwFbg9vxXbpRC0MXpSFXmqJQFEVBoWxbDlN3uZS9aKzf0MVzXTzXwXVk2TdaYVSOLlKKdSbNWsdrYLyDYVyzbefuJhocckbvM5m51K9rSl3q4gL1B9YlP905ZU1TC7C6iDSCC6xis/MdcZgJ6xguv7tRy8TefmoGCjtGyvp/9cE22mhUniJy+xulEATSIfQlInBAuLX0J7Edmdf2WhhTYHSGyRVqzYxrxqyPTTCNnpHGYMWl8VhzFX3QXAxMszHxttw65hBU5QFMvKwMKBoBuGE5saeUHbJ+6yOpNuKYZhBusa2oRSX2WW5XI2i0Icxm5lp9Np3GgMpBXVUWNTTHqY6sS1YxB5I6rhApMw1RqANi96J47p5rxdTZcSfj4yBXPug5IRVZmwsiI2smM4f7wNSYsJyVzpqbGn18YtfLs5kNt2PH7LNhfVHE9gjFdSG3MDV4742cE1e+Mts6VV1rq2mvF6laF4LP3JHY3fL7NQBz3+dnGhn6Kuv+sgFQN6iru4p/NdWyZpBUTFNno1rMF7NDIDustTWgoUZ3Gxbdjsw0HWPPfbI1Rqymxa5rKExDfakQDZ19LuhGtdv7kAPgMxcB0RzQDy9iQXN43yXhtkNDuuotfh84AJuAKOqfqeloVAXcdTEptoyGCqC1sd7CNICv5nwTtZWo96YRzQJyy2+3ufqiJtR3pmeUu+zskhrUxDZDKWN2Vq3BWq3VURtzmSgWe2L2kPhtsm63Ld/6DSC2jAtj6rfi5riC/dxT0QDMVwQAOXCniOouNDhSbnUV2EkhbEZKPcogGo7dpBeKhgKphozsNcHtlFXsl/6WL8YrhVp3va1NIDcapIR+29n68kV13bu/c9/o2A5sYsw+6+3cAFssfkXdsGJJY8op9bBbILsr2V4ZANTaCCEbs7Pr/9ZlfUToh2UrW3N4tNyeSBHbcRIh7vpH34sstm99z3WiyEHnuhwEWP4+TxKvFP/k58b3zJV6x3HQrarEbX+huOQ6GEA4As8TJNmmDuayda16lbwMANybKiiMKC4rDbBF3Q4tLyJZrihU8RJWxViasei/OONm92pJCesOVhxsbnBwcyQsE81q4fE3//gby2nV652AFPzBv/gpTs+ntFueHQ6j970Du9EZsxXCW5d5Hphqew8nmkuxndRTAcJxabVbrPK4HKJz8I8KA0hjkgaiNPebAUsW14vSF3RRlJ7Qi4gXS1tbsTvEt9HM3/WTlCO4pEORrDBG40UdjFY7o3JLRipyhHS2jqGSFdL3cRy3clhfypBV3YoVht2Wy//6w2coJfhf//RTqNQixfEF3/6XP833/dgZR0c+6TKx+YC+V000F+VvUrmyNcauTduv/JfGkKxS/NBON9ozVu4h+ISwN5PvCkJfUqjNVSxUQbxYEnbaLPXyKkBY7UjjOyJveZeSwQBSaz0u9ShxiP08x0XnBUoX2+BbJ3GySeCsO2pNNblSI8qWaIvzWzz57m/kDb/p21me30IrtTWvI18tKNIYv2x1JqSsBtm89d/9U3Qefw1FasFxKXuWLKuLDWMrbTg+8vi+f3XGn/o7T+N5BZ6n+FN/52m+70de5PjIZzWe88Zv+U08+eu/lHwZl0mroPKCIsloDbsIKYlnK4q8IE9z4kWMMYbf9cd/K+1+u4wl24e0oZRLAXUx220WyHEEcar5s9/6Kt71xi6j83RH3baJEzovcMubtXFty0MqpaYvRR2Ud8l+BnDI9TmaTGghKrfQzkNgq9YqV7MQ6CIjGjzKV/3R78PxIoSQ5PEClacYZYHquD7CcZGuTzI7Izp6hLd84x/i6PVfxPEbvpg3feMf5OipL7SzRDwfoxWPf9lv5Nqb38mX/kf/PeHxDdLpGJXEqCTm8a/8BsKj6xhV2Ny+oihZUlS1HbviXrguXr9XsbSQklwZBoHmr/3jZ/iBD7T5/vd5/LV//Dkef/OTaNdFOJKb73gbx1/wOrLMMohWiu7NI1rHA77uT38bb/zKX8MX/7b3cO3JGxw/eZ13/pYv5al3vIG3vvsLCEKP5WxF1AkJIp/FNEYrO5K2no29Bp7WhjxvVsOktLXLcarKdH5IMk22KvhN7zri7a9p83u+5gZRINE7Q0G0VkjkoRFJRhgh0CZWRXFSStK78sq4d8mAGnDiOD3rhOEZmscOftrZFx/GaBw/5Nrr3okxmtXkhNe955tZnj/H+LlP8Pjbv5rHv+TrWY2fR+Up6WKMMYrXffW3cvtjP0O+nPKq9/xWTj/+fl73G7+V8dMfpXXtMaLrj7C8/SwAR2/6Ndz4kveQjG5jlGb5/DO0H3uSd37Xf8NH/se/jBCS1ektHD9A5xluq12l2CMlxWLBtS/9tbz+3/n9vP+P/wmcMCRfLPA6HXpveTPTX/h5Pie+glf9vt/O0Y/9O7z9D/5eXvyp99F99eMk5xNUofh1f/I7mD/7Itfe8CpknuGGPiov6D96zOvf9QVce/yY/o0BrUBy9uwpZ8+f86o3Pc7r3/4qnnj1MatFwux0yic//BzPP3OG57vVPBTXlSyXOV/zVa/lLW++wd/8Oz9Pt+OjlKnAuYoLjIE3v67H7fOE80nGb//yG4S+5JnbCZ3Q4Y9925N843/5CaYrheOKbY1IY/VccZBaz7PValwS2V2JYPcOWa/+WhZFPEX1nxZGPGasNeQ0RmtEk74lSKYn3HzjuwF449d8O6Onf5m3fuMfZ/Lcxwi7x2idU6QrHvnCr+TWR36aZHqGkA5COmSLKQCt64+zOn+B6Pgm+WqOzjNUmtC++QTHb30Hq/MX0FlGka7we33C4+u85rd+C8FgyMkv/gzZfEZ0/Qa3fvanyJcLy7qOg0pTpOfi9WzDIp3nXPvSdyI8lzf+e99O/N5jnvp9v4vw+oDW619t1Y1Om2DYR0/GSMfhxltei8kyhq95jOmvPGN1SW3QhSKdr9CFFbPpKqfIC7QyXH/imNe++XGmL55jDPyad7wa33f5tV/+FCcvjAkjjw9/8PNoA7PJkhvXO3zBG69RpDl56FYiN0kUX/nOmySp4j/41qf4kfe9yOsfa6GLgut9j1zZATjjRXF5tG1//bQQwhGGZ4qimJUA1A0YuScANPtR9+qP5WjzIYF4d5PFhzlsvQkpKfKEG2/4tXQfeYpkdoLRmrB3zQ6oKTJMkWNUQb6aW9HsODWd0WJd5xlaFTXDo2yVUeRWJ4xX6DwjFNdtkVEa4wYRwnV59Td+E9NPf5zrX/ZudJHjtFrMn/4sRimSs1NkEJCej3jN7/lmEILr7/kyRh/8JYrZHP/aMf71Y/LlAp3ZcVtGWdG+3vI4RecFRZptWzprsb92xlfiFYq8IF6m1oo2hvlkRbcf8Za3P86ta22C0OXLvvRVfPxjtzjqByTLhPk85ZFHevR6AX/gm97Mv/7IbZ56VY+jjkOWKeargk7L5Q1PtPnwp8csYkXYEaV1Ly529DYC0M5iRpkPA1mJo6Y51vd0TsjuUEUFOMZkH4AANBJxAW82Ks+CIk/IVzOE51YWbM0vUVsscVADF7XpmfVjr42QesfQ9airtdGi84x0dE7/TW+m85rXce2d7yI5O6Xz2tcw/vCHUElC64knEEKQz+d2nrAUmKLA5MXGeKqBa3OTieqGuLqFuu45U0o5R6KVIV5lpGl5bSKHKHR561tu8pEPPc9ymfOd3/El3D5d8tjNNrdut3jtE11efHFGViik8FHakGSqbKIptu+Hq8i9XdvBgFHZB0qpp9gfvnlPjZBdzcBgJ+J4y+X840LwXHmV79gpuXav7LpS7sidfJcuClHm5AnHsWJ6tURnmTVQXLcCk84zdJZtsRZCXM2SvhdO8xI0FpwbD0Mc53tFXElaUBSaNFPWCKmVK4h7c74ahBCC55bJ/GOAV2LB7Ky/uZcA3I0/q7V6WhTFuRDmp0qWud+DdbinvcJ2wn0V0+74J7cakiN4UJtosHJ335RC7N0b9/iMje0QYX6qKIpRefg1Hu44R0He3R1QPXLASdP0h4VAGWPky78ML/UKPzhAvdTzNXd985m7vn+NMVIIVJqmP1SK33wHE/fND9ikA+aAt1pNPiIE75dWuVA83F4GCSD2snHu9qa7g0MoKaUQgvevVpOPlOI3fzl1wHoarCplfwHkWifvtfgz4l5c3pdFBF/05Qt9E/dfuTjcEnfjkNjKcDEvh/5jhJQCrZP37qx/04TM+6ID7jKgwhYDBLPZ5OeAnxE2rKDv30W4hyJ4J5Fu3WRdCIEMgk3KWJVY8PIpF+KCk14nLGi9Sc9yXYkjBUpv77uHm7Zra36mXGuvXHvFfnXafdMBdwG4Rn8G6Dxffq+UIjXmDrQTY7bjjZcutLkTd8FhdtuZ4idcFycIUFmKSlMWTz+NTm2hjROGuFG0gca6DPM+gnI3I3rTBBM838V1JZ2OXxkco3HMcpXT7/r4nqTd8ioSX7cyVPquK3yNjcCINM9X31uuf1Zb/10RfM8jIU1ieA3AHEiA/nI5/1i/H/49x3H+Pa214rKB2MYgHA/XC1E6QQiBF3UAYTNdTDkEUB82rOznTJmWtp24bsokha1MYKWQvm/nfbgeGHBbbU5+/mc5+bmfYfXiCyAEycktbn7lV3Hjy9/NCz/2owgheOTrvtp+3/OQQYDbisgnSVUXvAvKdT+Z9Xk0pj83FIuvwWZn0hmkI2i1fVzPxQ9cbr8449atOf/8n32Ua8cRnbbPd/+3P8nRsIXQmqc/P2EyTXnTqzooJfA9ie9Jem23PP4d37vacRzHGPV3l8v5x8p1XZRrvwvAO0K4e5c35y4AcyAGutPp6d8fDG++Uxj5JcYUB0GolcIN2jz7wX9Btprxjm/9CxTpihc/+tNoleG1+uSpHXflRR2EdLfy60yZD+i1ujh+gBd1yJbjCpTScXGjNnLhV7PchJAEgyNuf+Bn8Lt9XvipH8Foxa2f/Vcsnvs8OsuQvl9lsAghCa5f54Uf+mGcIGD8oQ/jHw85+sK3Mv/Ixxh98EMcv+NtFpC+h/R9vFZEvijHdHXauL6H324Ruw7Sc8vOquX5OBLHczFFVuHTcSVB5KOWLkppOt2Q2y9MeObTtxidzfE8h89++gTfdxifz/j93/Yuut2ALFXESc7f/YGP43mSNFW86bV90lzxXf/2F/C5F1aMpymveySgHTpbN8rFGoxRQjiOEOaDi8Xp/wYEwLy27kWDGOZ+A3AXhOtwjA/4aTL7i0Ew+B6txHVhP7eX8C6EIOo/wuz2Z0lmJ3zwB/4L8tWM2e3P8dgXfg1SuiTzU3SR8/T7fpDW0U0e/aJfj9EFWiu8dgeVxDz3vv+b1dkLLG5/nutv/7VgDMHwOpPPfJyzj36AfGnn9H7hd/4nrE5e5MX3/QSf/6EftOJMFUjHwSiN9H3cVmujB7ou6WTM6Jf+NW4UVWG5fDrlY9/9l5neeo7bP/oTUOSMfv4DxG/7AmaffYZ0POH49U+ii4JP/JMfJZsvicdTWu0Qx3c5ujFAuhIv9EmXMfNzh+uP9JBS4PoOz3z8OT7xi5/mjW99kniZ8gs//mHOTmaMTuZ4gU1G8H0XoyFqt/j4J09ZLjOC0EUIQadtcxBD3+HpF2zruT/ztz5Elhvm84wve/sRBviPv+kJCm1w5eEMcwEaIxwpxWmaTr+7KKq1TmsiWPES6pPuNhumiQWzkgW9OI6fcxzvzztO9Fe0IZQ1EBpASI90NeaTP/E/WcC0h8xvfQYhHaL+dc5+5Rc5/eT7qqaMKkuJjh9l+tyneO1XfwtB75hf/vt/kSKNmT/7KzhBC5XFnH/ig6gsxev1mX7uEyxeeAYniNBFTuv6oyTnJ3z2X/xDoqObGKNxXQ+DQbpsRGUZZXDCkNmnPsVHP/5xpOeVotuzwM1zEAJ/2Of0Z97P6pOf4kP/7feQ5zmr6Tlf9zf+K/LpnI/+8x+m3Tvm2Z9NCXpt8iRj8Ke/jRc//gxP//xHGT9/Rp4VPPr6R9FK8WVf/0WcvTDm+c+8yLOfuoUxhiJX+L5Lpx+VE5rs+Wlj8H2Hj378hF/+8C1aZRZ25S8xBt+z932W21Ss4TDglz87J57nPP6HX890qfi2v/wppkuF64hdbcBKf0fGRbH883EcP1++H5drnR/Q/+4IiM5LMNZEw+v1v1tZlr7gOP4znut/les6bp5nWpSxICEdimzF8x/6UaRjT0E6bpU2LxwHx/WRjodwHNwgQucp81ufQ+cZs+c/ze1f/mmMKnBDm0blBhHJ+IR8teDW+38CXeRWBDt2tkd8fsLsc5/a7vNxybVaM+Ge5eY4xKsFX/9134DwXH74h36IqNUBIXCkSzZdMP70MxSzGMfzbGZ0oRBS8Nmf/TCTF86Z3h5XIbLRC+fEs5j5eMGLn72N49hWv1IKPN+tQNfIIK6D7zsXtk2rlwH4rkS4ktNJxi99ZsHHPr/Cc3e7Whgd+KE02uRZlvz55XL6vpKs5qW+n9ZA+JIY8G4dGGuwOeXDK8VvVD5aQA8oOq3BV3cHR/9ZmsVhliVKrhFXAtHoq/utbUr+skzJ7+5/V4iDfrxitcQJwjKj5qVtrusyOrvF93zv9wLwR/7wH+bo2iO22ZEQFHGZkh/4B/2JQoqK0davk2VCEAU2ieF+unsEzFeKwJOEvqxZx6C1Ur4fOb4fJovJ6C8sVpN/VYJvhk2/j3dYsB6Gu+8JqU3GiCipWJZ3hqw9uovV5CeFw6I3OP5PHde9nqWJKvcJjL6zALnRuGG7en3hd3f2+d1ebcjgS98c1+Pppz9fvV4zpjHgtSNraGhz+Bx3ZuEJIWj12i+Lv9EA/Y7VFdXmPAygo1bH8b3gZDY5++7FavKBklzqzJde4Hx+WQOhaxaUJQu65ckGQFhjwi6gvTB88nhw/U8h5Jdo2+qs1AtfSnVp03dfynubS7JpJXKobs42Hrd9/9ydotztmjuz9565z7/jjt/TGKSUEoH5wNnZyV/N8+TZcm3nNeZbgzB/qf6/ewHAXVEsSwDugjACOuX+oNfr/14hnG/VWgemHDMp6lOWXynbFeaXrCvdzEXn/gr7WXUJUWaxCyGEkFKmxqj/fTab/sMSZLr09cUN4MtrRqh5UAxYP4a8gAnrbBgCRafTeYvr+78frX+d3jT/3ojmh9v9lsAacETZ01BK+b4sy/7+YrH4WLl+yQ7rHWK+l9we5l4B8CJx3AREA3i9Xu+dUsrfZox5hzHGNZt4rGqwsh9udx/RM2U4zalNeiqEEB/QWv2z2Wz2iyW4xAHgpffK7XI/AHgZCP0aEOuiOSx/kNdut9/keN5XCmO+FHjV2u1QE213XGvwq3QTDWuyVcoJfN4I8X6V5z+1XC4/WQJrzXrxDujSe+nzu58AvAiEh4C4BqO//lGO4wyCIHrK85y3CSHeDDxpjBmUn3243fmWCiEmwHNam48Whfpomsa/opSa1NYpawDdLvDuC/juh2jbBaGsgbAK1TU8gvJZ1hTbQEqv63ly4DjOsRCiLYQTCWFCDmfx/GoR1YcWXxsjUmPMyhi1VEqda60neZ7PS1CtDcZ1NssaaE2PQ7l+986XdZ8WbH1MeQEb1h9+w3teDWS71anmoW54oa5Xv051o07XLNj6I2t4r4n19P1Qf+7XAooGC3kNxF0wNj07O4/6MR6C73IQ1ms01M6jqIFs97mofU5zl1nOrwQAHhLJdZ9hHYi7r5vAJx5axle3eNkvn9gFYdHwuu7buy8i90HoTLts2MSKa11RHmC9hwB8aQDcBaKu6XZNbHdfWe9BKe3iwENe8jj0vYdbMwibHvqSx6Hvvax+o5fz7+2mcckDrw8B7yEAr86CTWBses3LxXqvFLeFOMCMXAA48Qo591e6a8ZcAEgOMJ15kCDgFQBELgDc7mfMQwA2AlBcAYiHwMqvVgBedk7i36Bzf6Uw4EXvm1fyYv+bsj0E352B8OH2cHu4Pdwebg+3h9vD7eH2cHu4PdwebgD/H4Rw75tXfXkiAAAAAElFTkSuQmCC" alt="">
+      <div>
+        <h1>Mix Support DJ</h1>
+        <p data-l="ja">Serato DJ と連携して「次にかける曲」を提案する Mac アプリ</p>
+        <p data-l="en">A Mac app that works with Serato DJ and suggests what to play next</p>
+      </div>
+    </div>
+    <div class="bar">
+      <nav>
+        <a href="#start"><span data-l="ja">使い方</span><span data-l="en">How to use</span></a>
+        <a href="#plans"><span data-l="ja">無料版と Pro</span><span data-l="en">Free &amp; Pro</span></a>
+        <a href="#faq"><span data-l="ja">よくある質問</span><span data-l="en">FAQ</span></a>
+        <a href="#contact"><span data-l="ja">お問い合わせ</span><span data-l="en">Contact</span></a>
+        <a href="#privacy"><span data-l="ja">プライバシーポリシー</span><span data-l="en">Privacy Policy</span></a>
+      </nav>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" id="lang-ja" data-set="ja" aria-pressed="false">日本語</button>
+        <button type="button" id="lang-en" data-set="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 使い方 -->
+  <section id="start">
+    <h2><span class="tag">Guide</span><span data-l="ja">使い方</span><span data-l="en">How to use</span></h2>
+    <ol class="steps">
+      <li><div>
+        <h3 data-l="ja">Serato と連携する</h3>
+        <h3 data-l="en">Connect Serato</h3>
+        <p data-l="ja">「Seratoと連携」を押して、ミュージックフォルダの中の「_Serato_」フォルダを選びます。Serato のライブラリ（BPM・キー・ジャンル）をそのまま読み込みます。最初の一度だけで、次からは自動でつながります。</p>
+        <p data-l="en">Click “Connect Serato” and choose the “_Serato_” folder inside your Music folder. Your Serato library (BPM, key, genre) is loaded as is. You only do this once; it reconnects automatically after that.</p>
+      </div></li>
+      <li><div>
+        <h3 data-l="ja">Serato で曲をかける</h3>
+        <h3 data-l="en">Play a track in Serato</h3>
+        <p data-l="ja">デッキに曲を読み込むと、数秒で「次に合う曲」が並びます。大きな数字は相性の点数（100点満点）、BPM の横の +1.9% などは今の曲からのテンポの差です。</p>
+        <p data-l="en">Load a track on a deck and the best next tracks appear within seconds. The big number is the match score (out of 100); values like +1.9% show the tempo difference from the current track.</p>
+        <div class="keys">
+          <span class="key good">8A→9A</span><span class="key mid">8A→10A</span><span class="key bad">8A→3B</span>
+        </div>
+        <p data-l="ja">キーの色は、緑＝安全、黄＝エナジーブースト系、赤＝ぶつかる可能性あり、です。</p>
+        <p data-l="en">Key colors: green = safe, yellow = energy boost, red = may clash.</p>
+      </div></li>
+      <li><div>
+        <h3 data-l="ja">候補をクリック → Serato で <kbd>⌘F</kbd> <kbd>⌘V</kbd></h3>
+        <h3 data-l="en">Click a suggestion → <kbd>⌘F</kbd> <kbd>⌘V</kbd> in Serato</h3>
+        <p data-l="ja">候補をクリックすると「アーティスト名 曲名」がコピーされます。Serato で ⌘F（検索）→ ⌘V（貼り付け）すると、その曲が Clean / Dirty などの別バージョンと一緒にすぐ出てきます。</p>
+        <p data-l="en">Clicking a suggestion copies “Artist Title”. In Serato, press ⌘F (search) then ⌘V (paste) to find it instantly, together with other versions such as Clean / Dirty.</p>
+      </div></li>
+      <li><div>
+        <h3 data-l="ja">ブースの横に置く</h3>
+        <h3 data-l="en">Keep it next to Serato</h3>
+        <p data-l="ja">ウィンドウを細くすると小さい表示になります。📌 で常に手前（Serato が全画面でも上に出ます）、◐ で透明度を変えられます。▲ 上げる／▼ 落とす、系統ボタン（HipHop・R&amp;B・Dance…）で候補を絞れます。</p>
+        <p data-l="en">Make the window narrow for the compact view. 📌 keeps it on top (even over full-screen Serato) and ◐ changes transparency. Use ▲ Up / ▼ Down and the style buttons (HipHop, R&amp;B, Dance…) to narrow the suggestions.</p>
+      </div></li>
+    </ol>
+
+    <dl class="spec">
+      <dt data-l="ja">動作環境</dt><dt data-l="en">Requirements</dt>
+      <dd data-l="ja">macOS 14 以降 ／ Serato DJ Pro 4（3.x の後期バージョンにも対応）</dd>
+      <dd data-l="en">macOS 14 or later / Serato DJ Pro 4 (late 3.x versions also supported)</dd>
+      <dt data-l="ja">インターネット</dt><dt data-l="en">Internet</dt>
+      <dd data-l="ja">不要です（任意の Last.fm 連携を使うときだけ使います）</dd>
+      <dd data-l="en">Not required (used only for the optional Last.fm feature)</dd>
+      <dt data-l="ja">言語</dt><dt data-l="en">Languages</dt>
+      <dd data-l="ja">日本語・英語（Mac の言語設定に合わせて切り替わります）</dd>
+      <dd data-l="en">Japanese and English (follows your Mac’s language setting)</dd>
+    </dl>
+  </section>
+
+  <!-- 無料版と Pro -->
+  <section id="plans">
+    <h2><span class="tag">Plans</span><span data-l="ja">無料版と Pro</span><span data-l="en">Free &amp; Pro</span></h2>
+    <p class="lead" data-l="ja">Pro は一度購入すれば、ずっと使えます（買い切り）。</p>
+    <p class="lead" data-l="en">Pro is a one-time purchase. Pay once, use forever.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th></th>
+          <th><span data-l="ja">無料版</span><span data-l="en">FREE</span></th>
+          <th class="pro">PRO</th>
+        </tr></thead>
+        <tbody>
+          <tr><td><span data-l="ja">Serato 連携・今の曲の自動検出</span><span data-l="en">Serato link &amp; now-playing detection</span></td><td>✓</td><td>✓</td></tr>
+          <tr><td><span data-l="ja">次に合う曲の提案</span><span data-l="en">Next-track suggestions</span></td><td><span data-l="ja">2曲まで</span><span data-l="en">Up to 2</span></td><td><span data-l="ja">相性順にすべて</span><span data-l="en">All, best first</span></td></tr>
+          <tr><td><span data-l="ja">対象の系統</span><span data-l="en">Styles</span></td><td>Dance (House) · HipHop</td><td><span data-l="ja">すべて（R&amp;B・Pop・Latin など）</span><span data-l="en">All (R&amp;B, Pop, Latin…)</span></td></tr>
+          <tr><td><span data-l="ja">セットリスト自動作成</span><span data-l="en">Auto setlist</span></td><td>—</td><td>✓</td></tr>
+          <tr><td>Last.fm</td><td>✓</td><td>✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <h2><span class="tag">FAQ</span><span data-l="ja">よくある質問</span><span data-l="en">Frequently asked questions</span></h2>
+    <div class="faq">
+      <details id="faq-nothing">
+        <summary><span data-l="ja">候補が出ません</span><span data-l="en">No suggestions appear</span></summary>
+        <div class="a">
+          <p data-l="ja">Serato と連携しているか（画面下の「Serato 接続中」）を確認してください。BPM やキーが未解析の曲は候補に出ないので、Serato で曲を解析（Analyze）してから「Seratoのライブラリを読み込み直す」を押してください。無料版では Dance・HipHop 以外の曲で選曲できません。</p>
+          <p data-l="en">Check that Serato is connected (“Serato connected” at the bottom). Tracks without BPM or key are skipped, so analyze them in Serato and then choose “Reload Serato library”. The free version works only for Dance and HipHop tracks.</p>
+        </div>
+      </details>
+      <details id="faq-current">
+        <summary><span data-l="ja">今の曲が切り替わりません</span><span data-l="en">The current track does not update</span></summary>
+        <div class="a">
+          <p data-l="ja">Serato がデッキに曲を読み込んでから、数秒で反映されます。反映されない場合は、⚙ ›「診断情報をコピー」を押して、その内容をお問い合わせ先に送ってください。急ぎのときは「今の曲を手動で選ぶ」で指定できます。</p>
+          <p data-l="en">It updates a few seconds after Serato loads a track on a deck. If it does not, choose ⚙ › “Copy diagnostics” and send the result to us. In a hurry, use “Pick the current track manually”.</p>
+        </div>
+      </details>
+      <details id="faq-fullscreen">
+        <summary><span data-l="ja">Serato を全画面にすると見えなくなります</span><span data-l="en">It disappears when Serato is full screen</span></summary>
+        <div class="a">
+          <p data-l="ja">📌（常に手前に表示）をオンにしてください。全画面の Serato の上にも表示されます。オンの間は Dock とメニューバーからアイコンが消えるので、終了は小さい表示の右上の ✕ から行います。</p>
+          <p data-l="en">Turn on 📌 (Always on top). The window then stays over full-screen Serato. While it is on, the app leaves the Dock and menu bar, so quit with the ✕ in the compact view.</p>
+        </div>
+      </details>
+      <details id="faq-style">
+        <summary><span data-l="ja">曲の系統（HipHop・Dance など）が違います</span><span data-l="en">A track shows the wrong style</span></summary>
+        <div class="a">
+          <p data-l="ja">系統は Serato のジャンルタグから判定します。「MainStream」やタグなしの曲は、同じアーティストの他の曲から推測します。Serato でジャンルを直して、ライブラリを読み込み直すと反映されます。</p>
+          <p data-l="en">Styles come from the genre tags in Serato. Tracks tagged “MainStream” or left blank are guessed from the same artist’s other tracks. Fix the genre in Serato and reload the library.</p>
+        </div>
+      </details>
+      <details id="faq-lastfm">
+        <summary><span data-l="ja">Last.fm 連携とは？</span><span data-l="en">What is the Last.fm feature?</span></summary>
+        <div class="a">
+          <p data-l="ja">今の曲と「一緒に聴かれている曲・アーティスト」を Last.fm から取り、クラブの定番のつなぎを「定番」ラベル付きで上位に出す機能です。使わなくても選曲はできます。</p>
+          <p data-l="en">It gets tracks and artists that are often played together with the current track from Last.fm and ranks proven transitions higher with a “Classic” label. Suggestions work without it too.</p>
+          <p data-l="ja">API キーはご自身で無料で作ります：<a href="https://www.last.fm/api/account/create" target="_blank" rel="noopener">API アカウント作成ページ</a>で Application name だけ入力して Submit → 表示された「API key」（32文字）をアプリの ⚙ › Last.fm の設定 に貼り付けます。Shared secret は使いません。</p>
+          <p data-l="en">Create your own free API key: on the <a href="https://www.last.fm/api/account/create" target="_blank" rel="noopener">API account page</a>, enter only an Application name and click Submit, then paste the “API key” (32 characters) into ⚙ › Last.fm settings in the app. The Shared secret is not used.</p>
+        </div>
+      </details>
+      <details id="faq-restore">
+        <summary><span data-l="ja">別の Mac で Pro を使いたい／買い直したくない</span><span data-l="en">Use Pro on another Mac without paying again</span></summary>
+        <div class="a">
+          <p data-l="ja">同じ Apple ID でサインインした Mac なら、Pro の画面で「購入を復元」を押すと無料で使えます。</p>
+          <p data-l="en">On any Mac signed in with the same Apple ID, click “Restore purchase” on the Pro screen.</p>
+        </div>
+      </details>
+      <details id="faq-serato">
+        <summary><span data-l="ja">Serato の公式アプリですか？</span><span data-l="en">Is this an official Serato app?</span></summary>
+        <div class="a">
+          <p data-l="ja">いいえ。Mix Support DJ は個人が開発した独立したアプリで、Serato Limited とは関係ありません。Serato の設定やライブラリを書き換えることはなく、読み取るだけです。</p>
+          <p data-l="en">No. Mix Support DJ is an independent app and is not affiliated with Serato Limited. It only reads your Serato files and never changes your Serato settings or library.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- お問い合わせ -->
+  <section id="contact">
+    <h2><span class="tag">Contact</span><span data-l="ja">お問い合わせ</span><span data-l="en">Contact</span></h2>
+    <div class="contact">
+      <div class="mail">
+        <code id="mail">ketamal3333@gmail.com</code>
+        <button type="button" class="copy" id="copy-mail"><span data-l="ja">コピー</span><span data-l="en">Copy</span></button>
+      </div>
+      <p data-l="ja">不具合のときは、次の内容を書いて送ってください。</p>
+      <p data-l="en">When reporting a problem, please include:</p>
+      <ul data-l="ja">
+        <li>macOS のバージョンと Serato DJ Pro のバージョン</li>
+        <li>何をしたときに、どうなったか</li>
+        <li>⚙ ›「診断情報をコピー」の内容（今の曲が出ない場合）</li>
+      </ul>
+      <ul data-l="en">
+        <li>Your macOS and Serato DJ Pro versions</li>
+        <li>What you did and what happened</li>
+        <li>The result of ⚙ › “Copy diagnostics” (if the current track does not appear)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- プライバシーポリシー -->
+  <section id="privacy">
+    <h2><span class="tag">Privacy</span><span data-l="ja">プライバシーポリシー</span><span data-l="en">Privacy Policy</span></h2>
+    <div class="policy">
+      <p class="meta"><span data-l="ja">制定日：2026年11月7日</span><span data-l="en">Effective: November 7, 2026</span></p>
+
+      <div class="block">
+        <h3 data-l="ja">1. 収集する情報</h3>
+        <h3 data-l="en">1. Information we collect</h3>
+        <p data-l="ja">Mix Support DJ（以下「本アプリ」）は、利用者の個人情報を収集しません。アカウント登録はなく、利用状況の分析（アナリティクス）、広告、トラッキングも行いません。</p>
+        <p data-l="en">Mix Support DJ (“the app”) does not collect personal information. There is no account, and the app uses no analytics, advertising or tracking.</p>
+      </div>
+
+      <div class="block">
+        <h3 data-l="ja">2. 本アプリが読み取るデータ</h3>
+        <h3 data-l="en">2. Data the app reads</h3>
+        <ul data-l="ja">
+          <li>利用者が選んだ「_Serato_」フォルダ内のライブラリ情報（曲名・アーティスト・BPM・キー・ジャンル）と再生ログ。今かけている曲を知るためだけに読み取り、書き換えはしません。</li>
+          <li>利用者が追加した音楽ファイル。BPM とキーの解析のためだけに読み取ります。</li>
+        </ul>
+        <ul data-l="en">
+          <li>Library information (title, artist, BPM, key, genre) and play logs inside the “_Serato_” folder you choose. They are read only to find the track you are playing and are never modified.</li>
+          <li>Music files you add, read only to detect their BPM and key.</li>
+        </ul>
+        <p data-l="ja">これらの処理はすべて利用者の Mac の中で行い、外部に送信しません。</p>
+        <p data-l="en">All of this happens on your Mac and nothing is sent anywhere.</p>
+      </div>
+
+      <div class="block">
+        <h3 data-l="ja">3. Last.fm 連携（任意）</h3>
+        <h3 data-l="en">3. Last.fm (optional)</h3>
+        <p data-l="ja">利用者が自分の Last.fm API キーを設定した場合に限り、今かけている曲の「アーティスト名と曲名」と、その API キーを Last.fm の API に送信し、似た曲・アーティストの情報を受け取ります。受け取った情報は利用者の Mac に最大30日間保存します。Last.fm での情報の扱いは <a href="https://www.last.fm/legal/privacy" target="_blank" rel="noopener">Last.fm のプライバシーポリシー</a>をご確認ください。設定しなければ通信は一切行いません。</p>
+        <p data-l="en">Only if you enter your own Last.fm API key, the app sends the artist and title of the current track, together with that key, to the Last.fm API and receives similar tracks and artists. The results are stored on your Mac for up to 30 days. See the <a href="https://www.last.fm/legal/privacy" target="_blank" rel="noopener">Last.fm Privacy Policy</a> for how Last.fm handles data. Without a key, the app makes no network requests.</p>
+      </div>
+
+      <div class="block">
+        <h3 data-l="ja">4. 購入</h3>
+        <h3 data-l="en">4. Purchases</h3>
+        <p data-l="ja">Pro の購入は Apple の App Store を通じて行われます。支払い情報は Apple が管理し、開発者が受け取ることはありません。</p>
+        <p data-l="en">Pro is purchased through Apple’s App Store. Apple handles payment information; the developer never receives it.</p>
+      </div>
+
+      <div class="block">
+        <h3 data-l="ja">5. 端末内に保存するデータ</h3>
+        <h3 data-l="en">5. Data stored on your Mac</h3>
+        <p data-l="ja">表示の設定、連携した _Serato_ フォルダの場所、Last.fm の API キーと結果のキャッシュを、利用者の Mac の中にだけ保存します。本アプリを削除すると、これらも削除されます。</p>
+        <p data-l="en">Display settings, the location of the linked _Serato_ folder, your Last.fm API key and its result cache are stored only on your Mac. They are removed when you delete the app.</p>
+      </div>
+
+      <div class="block">
+        <h3 data-l="ja">6. 変更とお問い合わせ</h3>
+        <h3 data-l="en">6. Changes and contact</h3>
+        <p data-l="ja">本ポリシーを変更する場合は、このページで更新します。ご質問は上の「お問い合わせ」のメールアドレスまでお送りください。</p>
+        <p data-l="en">Any changes to this policy will be posted on this page. For questions, email the address under “Contact” above.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Mix Support DJ</p>
+    <p data-l="ja">Serato は Serato Limited の商標です。Last.fm は Last.fm Ltd. の商標です。Mix Support DJ はこれらの企業とは関係のない独立したアプリです。</p>
+    <p data-l="en">Serato is a trademark of Serato Limited. Last.fm is a trademark of Last.fm Ltd. Mix Support DJ is an independent app not affiliated with either company.</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  function pick() {
+    try { var saved = localStorage.getItem("ms-lang"); if (saved === "ja" || saved === "en") return saved; } catch (e) {}
+    var n = (navigator.language || "en").toLowerCase();
+    return n.indexOf("ja") === 0 ? "ja" : "en";
+  }
+  function set(lang) {
+    root.setAttribute("data-lang", lang);
+    root.setAttribute("lang", lang);
+    document.querySelectorAll(".lang button").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.getAttribute("data-set") === lang));
+    });
+  }
+  set(pick());
+  document.querySelectorAll(".lang button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var l = b.getAttribute("data-set");
+      set(l);
+      try { localStorage.setItem("ms-lang", l); } catch (e) {}
+    });
+  });
+  var copyBtn = document.getElementById("copy-mail");
+  copyBtn.addEventListener("click", function () {
+    var text = document.getElementById("mail").textContent.trim();
+    var done = function () {
+      var ja = root.getAttribute("data-lang") === "ja";
+      copyBtn.innerHTML = ja ? "コピーしました" : "Copied";
+      setTimeout(function () { copyBtn.innerHTML = '<span data-l="ja">コピー</span><span data-l="en">Copy</span>'; }, 1600);
+    };
+    var fallback = function () {
+      var r = document.createRange(); r.selectNodeContents(document.getElementById("mail"));
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+    };
+    try { navigator.clipboard.writeText(text).then(done, fallback); } catch (e) { fallback(); }
+  });
+  // FAQ: open the one named in the link (#faq-lastfm など)
+  function openFromHash() {
+    var id = location.hash.slice(1);
+    var el = id && document.getElementById(id);
+    if (el && el.tagName === "DETAILS") el.open = true;
+  }
+  window.addEventListener("hashchange", openFromHash);
+  openFromHash();
+})();
+</script>
+
+</body>
+</html>
